@@ -108,6 +108,12 @@ func KmeansWithAll(k int, orgimg image.Image, arguments int, imageReSize uint, b
 
 	allColors, _ := extractColorsAsArray(img)
 
+	if len(allColors) == 0 {
+		return nil
+	}
+
+	k = maxK(k, len(allColors))
+
 	centroids := kmeansSeed(k, allColors, arguments)
 
 	cent := make([][]ColorItem, k)
@@ -163,6 +169,16 @@ func (a byColorCnt) Less(i, j int) bool {
 		return a[i].AsString() < a[j].AsString()
 	}
 	return a[i].Cnt < a[j].Cnt
+}
+
+func maxK(k int, lenColors int) int {
+	max := 400
+
+	if lenColors > max {
+		return max
+	}
+
+	return lenColors
 }
 
 // sortCentroids sorts them from most dominant color descending
